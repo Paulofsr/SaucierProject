@@ -27,7 +27,7 @@ namespace SaucierWeb.Controllers
             //if(user.Vazio)
             //    user = Usuario.ValidarLoginSenha("login", "OigaleaH1", cliente.Id);
 
-
+            //kdjfhkajsdhf
 
             return View();
         }
