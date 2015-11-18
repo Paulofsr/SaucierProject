@@ -11,6 +11,7 @@ namespace SaucierWeb.Controllers
     {
         public ActionResult Index()
         {
+            Cliente cliente = Cliente.Get(new ClienteCriteriaBase(new Guid("adfasdfasdfasdfasdf")));
             //Cliente cliente = Cliente.New(new ClienteCriteriaCreateBase());
             //cliente.Nome = "Novo!! Again!!";
             //cliente.Save();

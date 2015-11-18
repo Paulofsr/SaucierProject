@@ -103,13 +103,6 @@ namespace SaucierLibrary.ClienteBase
 
         protected override void SetParameters(SqlDataReader reader)
         {
-            Novo = false;
-            if (!reader.Read())
-            {
-                Vazio = true;
-                return;
-            }
-            Vazio = false;
             this.Id = ConvertBase.ToGuid(reader["Id"].ToString());
             this.Nome = reader["Nome"].ToString();
             this.CriadoEm = Convert.ToDateTime(reader["CriadoEm"]);

@@ -172,7 +172,7 @@ namespace SaucierLibrary.ClienteBase
         #region Validar Login Senha
         public static Usuario ValidarLoginSenha(string login, string senha, Guid clienteId)
         {
-            Usuario usuario = new Usuario();
+            Usuario usuario = Empty();
             usuario.GetByLoginSenha(login, senha, clienteId);
             if (usuario.Id != Guid.Empty)
                 usuario = Get(new UsuarioCriteriaBase(usuario.Id));
