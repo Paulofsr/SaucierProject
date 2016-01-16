@@ -7,11 +7,13 @@ using System.Web.Mvc;
 
 namespace SaucierWeb.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : AutenticatedController
     {
+
         public ActionResult Index()
         {
-            Cliente cliente = Cliente.Get(new ClienteCriteriaBase(new Guid("adfasdfasdfasdfasdf")));
+            //Cliente cliente = Cliente.Get(new ClienteCriteriaBase(new Guid("adfasdfasdfasdfasdf")));
+            //Geral.Logar("login", "OigaleaH1@3", new Guid("683BC06E-52EA-444A-97A6-F97E6FAC68C9"));
             //Cliente cliente = Cliente.New(new ClienteCriteriaCreateBase());
             //cliente.Nome = "Novo!! Again!!";
             //cliente.Save();
@@ -29,6 +31,12 @@ namespace SaucierWeb.Controllers
             //    user = Usuario.ValidarLoginSenha("login", "OigaleaH1", cliente.Id);
 
             //kdjfhkajsdhf
+
+            //if (!Geral.Logado)
+            //    Geral.Logar("login", "OigaleaH1@3", new Guid("B8F21383-8834-486C-98E4-2C09491565FD"));
+            //Usuario user = Geral.UsuarioLogado;
+            //user.MudarSenha(PessoalLibrary.Configuracoes.Criptografia.Descriptografar(user.Senha), "123");
+            //user.Save();
 
             return View();
         }

@@ -1,4 +1,5 @@
-﻿using SaucierLibrary.ClienteBase;
+﻿using PessoalLibrary.Configuracoes;
+using SaucierLibrary.ClienteBase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,13 @@ namespace SaucierWeb
         {
             get
             {
-                return (ObjectLoginSession != null && ObjectLoginSession is Usuario);
+                if (ObjectLoginSession != null && ObjectLoginSession is Usuario)
+                {
+                    if (Configuracao.ClientBaseIsEmpty) // É preciso atualizar, pois ao recarregar a session estará limpo a propriedade.
+                        Configuracao.BaseId = UsuarioLogado.Cliente.Base;
+                    return true;
+                }
+                return false;
             }
         }
 
@@ -40,7 +47,7 @@ namespace SaucierWeb
             if (!usuario.Vazio)
             {
                 ObjectLoginSession = usuario;
-                PessoalLibrary.Configuracoes.Configuracao.BaseId = usuario.Cliente.Base;
+                Configuracao.BaseId = usuario.Cliente.Base;
                 return true;
             }
             return false;

@@ -40,6 +40,9 @@ namespace SaucierLibrary.ClienteBase
 
         public DateTime CriadoEm { get; set; }
 
+        [Display(Name = "URL")]
+        public string Url { get; private set; }
+
         #region Overrides Properties
         protected override TiboBase BaseSelected { get { return TiboBase.Basica; } }
         #endregion Overrides Properties
@@ -90,6 +93,7 @@ namespace SaucierLibrary.ClienteBase
             lista.Add(CriarParametro(SqlDbType.VarChar, Base, "@Base"));
             lista.Add(CriarParametro(SqlDbType.VarChar, Nome, "@Nome"));
             lista.Add(CriarParametro(SqlDbType.DateTime, CriadoEm, "@CriadoEm"));
+            lista.Add(CriarParametro(SqlDbType.VarChar, Url, "@Url"));
 
             return lista.ToArray();
         }
@@ -108,6 +112,7 @@ namespace SaucierLibrary.ClienteBase
             this.CriadoEm = Convert.ToDateTime(reader["CriadoEm"]);
             this.Base = reader["Base"].ToString();
             this.Ativa = Convert.ToBoolean(reader["Ativa"]);
+            this.Url = reader["Url"].ToString();
         }
 
         protected override void SetParentAndChildren(SqlDataReader reader)
@@ -115,5 +120,39 @@ namespace SaucierLibrary.ClienteBase
         #endregion Parameters
 
         #endregion Data Methods
+
+        #region Custom Methods
+
+        #region GetIdByURL
+        public static Guid GetId(string url)
+        {
+            Cliente cliente = Empty();
+            cliente.GetIdByURL(url);
+            return cliente.Id;
+        }
+
+        private void GetIdByURL(string url)
+        {
+            Id = Guid.Empty;
+            List<SqlParameter> parameters = new List<SqlParameter>();
+            parameters.Add(CriarParametro(SqlDbType.VarChar, url, "@Url"));
+            string query = @"
+SELECT [Id]
+  FROM [SaucierDB].[dbo].[ClienteTB]
+where [Url] = @Url;";
+
+            ExecuteReaderQuery(query, parameters.ToArray(), "ReturnUrl");
+        }
+
+        public void ReturnUrl(SqlDataReader reader)
+        {
+            if (reader.Read())
+            {
+                Id = ConvertBase.ToGuid(reader["Id"].ToString());
+            }
+        }
+        #endregion GetIdByURL
+
+        #endregion Custom Methods
     }
 }

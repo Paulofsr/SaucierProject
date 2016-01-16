@@ -15,6 +15,11 @@ namespace PessoalLibrary.Configuracoes
             set { _baseId = value; }
         }
 
+        public static bool ClientBaseIsEmpty
+        {
+            get { return string.IsNullOrEmpty(BaseId); }
+        }
+
         private Configuracao() { }
 
         public static string ConnectionStringBase

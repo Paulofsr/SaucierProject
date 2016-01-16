@@ -43,20 +43,7 @@ namespace SaucierLibrary.ClienteBase
 
         [Display(Name = "Senha")]
         [Required(ErrorMessage = "Campo Senha é obrigatório.")]
-        public string Senha { get; set; }
-
-        [Display(Name = "Senha Atual")]
-        public string SenhaAtual { get; set; }
-
-        [Display(Name = "Nova Senha")]
-        public string SenhaNova { get; set; }
-
-        [Display(Name = "Confirmar Senha")]
-        [Required(ErrorMessage = "Campo Confirmar Senha é obrigatório.")]
-        public string ConfirmarSenha { get; set; }
-
-        [Display(Name = "Confirmar Nova Senha")]
-        public string ConfirmarSenhaNova { get; set; }
+        public string Senha { get; private set; }
 
         public System.Guid ClienteId { get; set; }
 
@@ -95,7 +82,7 @@ namespace SaucierLibrary.ClienteBase
         public Usuario()
         {
         }
-        
+
         public new static Usuario Empty()
         {
             return New(new UsuarioCriteriaCreateBase(Guid.Empty));
@@ -131,7 +118,7 @@ namespace SaucierLibrary.ClienteBase
             lista.Add(CriarParametro(SqlDbType.UniqueIdentifier, Id, "@Id"));
             lista.Add(CriarParametro(SqlDbType.VarChar, Nome, "@Nome"));
             lista.Add(CriarParametro(SqlDbType.VarChar, Login, "@Login"));
-            lista.Add(CriarParametro(SqlDbType.VarChar, Criptografia.Criptografar(Senha), "@Senha"));
+            lista.Add(CriarParametro(SqlDbType.VarChar, Senha, "@Senha"));
             lista.Add(CriarParametro(SqlDbType.UniqueIdentifier, ClienteId, "@ClienteId"));
             lista.Add(CriarParametro(SqlDbType.VarChar, Email, "@Email"));
             lista.Add(CriarParametro(SqlDbType.Bit, EmailConfirmado, "@EmailConfirmado"));
@@ -193,7 +180,7 @@ namespace SaucierLibrary.ClienteBase
             if (reader.Read())
             {
                 string senha = Criptografia.Descriptografar(reader["Senha"].ToString());
-                if(senha == Senha && reader.NextResult())
+                if (senha == Senha)
                 {
                     Id = ConvertBase.ToGuid(reader["Id"].ToString());
                 }
@@ -231,6 +218,17 @@ where [Login] = @Login and [ClienteId] = @ClienteId and [Id] != @Id;";
                 Login = string.Empty;
         }
         #endregion SetLogin
+
+        #region Change Password
+        public bool MudarSenha(string senhaAtual, string novaSenha)
+        {
+            if(String.IsNullOrEmpty(Senha) || senhaAtual.Equals(Criptografia.Descriptografar(Senha)))
+            {
+                Senha = Criptografia.Criptografar(novaSenha);
+            }
+            return false;
+        }
+        #endregion Change Password
 
         #endregion Custom Methods
     }
