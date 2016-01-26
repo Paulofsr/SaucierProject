@@ -13,6 +13,8 @@ namespace SaucierWeb.Controllers
         public ActionResult Index()
         {
             //Cliente cliente = Cliente.Get(new ClienteCriteriaBase(new Guid("adfasdfasdfasdfasdf")));
+            //cliente.Nome = cliente.Nome + "Paulo";
+            //string nome = cliente.Nome;
             //Geral.Logar("login", "OigaleaH1@3", new Guid("683BC06E-52EA-444A-97A6-F97E6FAC68C9"));
             //Cliente cliente = Cliente.New(new ClienteCriteriaCreateBase());
             //cliente.Nome = "Novo!! Again!!";

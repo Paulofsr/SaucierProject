@@ -14,14 +14,14 @@ namespace SaucierWeb.Models
             set { _mensagem = value; }
         }
 
-        [Display(Name = "Email")]
-        [Required(ErrorMessage = "Informe o Email.")]
+        [Display(Name = "Login ou Email")]
+        [Required(ErrorMessage = "Informe o seu Login ou Email.")]
         public string Email { get; set; }
 
         private string _senha = string.Empty;
 
         [Display(Name = "Senha")]
-        [Required(ErrorMessage = "Informe a Senha.")]
+        [Required(ErrorMessage = "Informe a sua Senha.")]
         public string Senha
         {
             get { return _senha; }

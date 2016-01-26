@@ -30,6 +30,8 @@ namespace PessoalLibrary.Padroes
 
         protected abstract TiboBase BaseSelected { get; }
 
+        private List<T> List { get; set; }
+
         private string ConnectionString
         {
             get
@@ -70,6 +72,13 @@ namespace PessoalLibrary.Padroes
             T obj = (T)Activator.CreateInstance(typeof(T));
             obj.SelectData(criteria);
             return obj;
+        }
+
+        public static List<T> GetList()
+        {
+            T obj = (T)Activator.CreateInstance(typeof(T));
+            obj.SelectDataList();
+            return obj.List;
         }
 
         public static void Delete(ICriteriaBase criteria)
@@ -168,6 +177,36 @@ namespace PessoalLibrary.Padroes
             Vazio = false;
             SetParameters(reader);
         }
+
+        #region Select List
+        private void SelectDataList()
+        {
+            using (SqlConnection cn = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cm = cn.CreateCommand())
+                {
+                    cm.CommandType = System.Data.CommandType.StoredProcedure;
+                    cm.CommandText = "List" + TableName;
+
+                    cn.Open();
+
+                    using (SqlDataReader reader = cm.ExecuteReader())
+                    {
+                        List = new List<T>();
+                        T obj = (T)Activator.CreateInstance(typeof(T));
+                        obj.SetDefaultParameters(reader);
+                        while (!obj.Vazio)
+                        {
+                            List.Add(obj);
+                            obj = (T)Activator.CreateInstance(typeof(T));
+                            obj.SetDefaultParameters(reader);
+                        }
+                    }
+
+                }
+            }
+        }
+        #endregion Select List
         #endregion Select
 
         #region Insert
