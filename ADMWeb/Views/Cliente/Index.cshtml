@@ -1,0 +1,43 @@
+﻿@using SaucierLibrary.ClienteBase;
+@model List<Cliente>
+@{
+    ViewBag.Title = "Cliente";
+}
+
+<div class="row page-header">
+    <div class="col-sm-8">
+        <h2>Clientes</h2>
+    </div>
+    <div class="col-sm-4 ">
+        @Html.ActionLink("Adicionar", "Add", "Cliente", new { @class = "btn btn-success" })
+    </div>
+</div>
+@if (TempData["sucess"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["sucess"]
+    </div>
+
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>URL</th>
+            <th>Editar</th>
+            <th>Excluir</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Cliente cliente in Model)
+        {
+            <tr> 
+                <td><label>@cliente.Nome</label></td>
+                <td><label>@cliente.Url</label></td>
+                <td><label>@(cliente.Ativa? "Ativo" : "Inativo")</label></td>
+                <td>@Html.ActionLink("Editar", "ContatoEditar", "Home", new { @Id = cliente.Id }, new { @class = "btn btn-success" })</td>
+                <td>@Html.ActionLink("Excluir", "Delete", "Cliente", new { @Id = cliente.Id }, new { @class = "btn btn-danger", @onclick = "return confirm('Deseja excluir esse cliente?')" })</td>
+            </tr>
+        }
+    </tbody>
+</table>

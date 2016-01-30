@@ -1,0 +1,53 @@
+﻿@using SaucierWeb.Models;
+@model  LogarModel
+@{
+    ViewBag.Title = "Home Page";
+    
+}
+
+@using (Ajax.BeginForm("Entrar", "Login", new AjaxOptions { HttpMethod = "POST", LoadingElementId = "divCarregando", OnBegin = "beginSalvarMulta", OnSuccess = "successSalvarMulta", OnFailure = "failureSalvarMulta" }, new { id = "frmSalvar", @class = "form-horizontal" }))
+{
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-success" id="filtros-panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Entrar</h3>
+                </div>
+                <div id="filtros-body">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p></p>
+                                <div class="form-group col-md-12">
+                                    <div class="col-md-12">
+                                        @Html.TextBoxFor(m => m.Email, null, new { @class = "form-control input-lg ", placeholder = "Email" })
+                                    </div>
+                                </div>
+                                <p></p>
+                                <div class="form-group col-md-12">
+                                    <div class="col-md-12">
+                                        @Html.PasswordFor(m => m.Senha, new { @class = "form-control input-lg ", placeholder = "Senha" })
+                                    </div>
+                                </div>
+                                <p></p>
+                                <div class="form-group col-md-12">
+                                    <div class="col-md-12">
+                                        @Html.ActionLink("Esqueci minha senha", "Esqueci", "Login")
+                                    </div>
+                                </div>
+                                <p></p>
+                                <div class="row">
+                                    <div class="col-md-8"></div>
+                                    <div class="col-md-4">
+                                        <input type="submit" class="btn btn-success btn-block" id="btnProcessarMulta" name="btnProcessarMulta" value="Entrar" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
