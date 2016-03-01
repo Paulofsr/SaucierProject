@@ -157,21 +157,21 @@ namespace SaucierLibrary.ClienteBase
         #region Custom Methods
 
         #region Validar Login Senha
-        public static Usuario ValidarLoginSenha(string login, string senha, Guid clienteId)
+        public static Usuario ValidarLoginSenha(string login, string senha, Guid ClienteId)
         {
             Usuario usuario = Empty();
-            usuario.GetByLoginSenha(login, senha, clienteId);
+            usuario.GetByLoginSenha(login, senha, ClienteId);
             if (usuario.Id != Guid.Empty)
                 usuario = Get(new UsuarioCriteriaBase(usuario.Id));
             return usuario;
         }
 
-        private void GetByLoginSenha(string login, string senha, Guid clienteId)
+        private void GetByLoginSenha(string login, string senha, Guid ClienteId)
         {
             Senha = senha;
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(CriarParametro(SqlDbType.VarChar, login, "@Login"));
-            parameters.Add(CriarParametro(SqlDbType.UniqueIdentifier, clienteId, "@ClienteId"));
+            parameters.Add(CriarParametro(SqlDbType.UniqueIdentifier, ClienteId, "@ClienteId"));
             ExecuteReaderProcedure("ValidarLoginUsuario", parameters.ToArray(), "ReturnByLoginSenha");
         }
 

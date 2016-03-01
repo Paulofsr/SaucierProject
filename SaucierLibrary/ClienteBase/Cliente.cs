@@ -52,7 +52,7 @@ namespace SaucierLibrary.ClienteBase
         /// <summary>
         /// Call statics methods: New, Get, Delete
         /// </summary>
-        public Cliente() 
+        public Cliente()
         {
         }
 
