@@ -1,0 +1,13 @@
+﻿@using SaucierLibrary.CaixaBase
+@model Comanda
+
+
+
+Info:  @Model.Informacao<br />
+Custo: R$@Model.TotalCusto<br />
+Pago:  R$@Model.TotalPago<br />
+
+
+<div id="ComandaItens">
+    @{ Html.RenderPartial("_comandaItens", Model.ToListComandaItemAtivas()); }
+</div>

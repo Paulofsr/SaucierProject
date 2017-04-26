@@ -1,0 +1,20 @@
+﻿@using SaucierLibrary.ItemBase
+@model Item
+
+@{
+    ViewBag.Title = "Editar";
+    Layout = "~/Views/Shared/_LayoutLogado.cshtml";
+}
+
+<h2>Editar</h2>
+
+
+@{ Html.RenderPartial("_form", Model); }
+
+<div>
+    @Html.ActionLink("Voltar", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

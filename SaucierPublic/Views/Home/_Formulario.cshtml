@@ -1,0 +1,58 @@
+﻿@model SaucierLibrary.ClienteBase.Cadastro
+
+@*@using (Ajax.BeginForm("Cadastrar", "Home", new AjaxOptions { HttpMethod = "POST", LoadingElementId = "divCarregando", OnBegin = "beginSalvarCadastro", OnSuccess = "successSalvarCadastro", OnFailure = "failureSalvarCadastro" }, new { id = "frmSalvar", @class = "form-horizontal" }))*@
+
+@using (Html.BeginForm("Cadastrar", "Home", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+{
+    <div class="row">
+        <div class="col-md-4 col-md-offset-8">
+            <div class="panel panel-info ">
+                <div class="panel-body panel-principal">
+                    <div class="row">
+                        <div class="form-group ">
+                            <div class="col-md-12">
+                                @Html.ValidationSummary()
+                                @Html.HiddenFor(m => m.Id)
+                                @Html.HiddenFor(m => m.CriadoEm)
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.Nome, null, new { @class = "form-control", @placeholder = "Nome*", @autocomplete = "off" })
+                                    <span class="input-group-addon">Nome</span>
+                                </div>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.Email, null, new { @class = "form-control", @placeholder = "Email*", @autocomplete = "off" })
+                                    <span class="input-group-addon">Email</span>
+                                </div>
+                                <div class="input-group">
+                                    @Html.PasswordFor(m => m.Senha, new { @class = "form-control", @placeholder = "Senha*", @autocomplete = "off" })
+                                    <span class="input-group-addon">Senha</span>
+                                </div>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.Estabelecimento, null, new { @class = "form-control", @placeholder = "Estabelecimento*", @autocomplete = "off" })
+                                    <span class="input-group-addon">Nome</span>
+                                </div>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.CNPJ, null, new { @class = "form-control cnpj-mask", @placeholder = "CNPJ*", @autocomplete = "off" })
+                                    <span class="input-group-addon">CNPJ</span>
+                                </div>
+
+
+
+                                <button class="btn btn-lg btn-success btn-block bt-Enviar" type="submit">Cadastrar</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="Carregando panel-body"></div>
+                <div class="OK panel-body" style="display:none">
+                    <div class="row">
+                        <div class="OK-Img"></div>
+                    </div>
+                    <div class="row" style="text-align:center;">
+                        <h4>@TempData["sucess"]</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

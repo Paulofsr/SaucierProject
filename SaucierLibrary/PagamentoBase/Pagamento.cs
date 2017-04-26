@@ -22,7 +22,18 @@ namespace SaucierLibrary.PagamentoBase
 
     public class PagamentoCriteriaCreateBase : ICriteriaCreateBase
     {
+        public System.Guid ResponsavelId { get; set; }
 
+        public System.Guid ComandaId { get; set; }
+
+        public Guid TipoPagamentoId { get; set; }
+
+        public PagamentoCriteriaCreateBase(Guid responsavelId, Guid comandaId, Guid tipoPagamentoId)
+        {
+            ResponsavelId = responsavelId;
+            ComandaId = comandaId;
+            TipoPagamentoId = tipoPagamentoId;
+        }
     }
     #endregion Criterias
 
@@ -41,13 +52,16 @@ namespace SaucierLibrary.PagamentoBase
         public DateTime DataHora { get; set; }
 
         [Display(Name = "Data/Hora Cancelamento")]
-        public DateTime DataHoraCancelamento { get; set; }
+        public DateTime DataHoraCancelamento { get; private set; }
 
         [Display(Name = "Cancelado")]
-        public Boolean Cancelado { get; set; }
+        public Boolean Cancelado { get; private set; }
 
         [Display(Name = "Motivo")]
-        public string Motivo { get; set; }
+        public string Motivo { get; private set; }
+
+        [Display(Name = "Informação")]
+        public string Informacao { get; set; }
 
         public System.Guid ResponsavelId { get; set; }
 
@@ -76,7 +90,15 @@ namespace SaucierLibrary.PagamentoBase
 
         public new static Pagamento Empty()
         {
-            return New(new PagamentoCriteriaCreateBase());
+            return New(new PagamentoCriteriaCreateBase(Guid.Empty, Guid.Empty, Guid.Empty));
+        }
+
+        protected override void SaveChilds()
+        {
+        }
+
+        protected override void BeforeSave()
+        {
         }
         #endregion Constructors
 
@@ -96,6 +118,9 @@ namespace SaucierLibrary.PagamentoBase
         protected override void Create(ICriteriaCreateBase criteria)
         {
             Id = Guid.NewGuid();
+            ResponsavelId = ((PagamentoCriteriaCreateBase)criteria).ResponsavelId;
+            ComandaId = ((PagamentoCriteriaCreateBase)criteria).ComandaId;
+            TipoPagamentoId = ((PagamentoCriteriaCreateBase)criteria).TipoPagamentoId;
         }
         #endregion Create
 
@@ -115,6 +140,7 @@ namespace SaucierLibrary.PagamentoBase
             lista.Add(CriarParametro(SqlDbType.DateTime, DataHoraCancelamento, "@DataHoraCancelamento"));
             lista.Add(CriarParametro(SqlDbType.Bit, Cancelado, "@Cancelado"));
             lista.Add(CriarParametro(SqlDbType.VarChar, Motivo, "@Motivo"));
+            lista.Add(CriarParametro(SqlDbType.VarChar, Informacao, "@Informacao"));
 
             return lista.ToArray();
         }
@@ -135,10 +161,11 @@ namespace SaucierLibrary.PagamentoBase
             this.ValorPago = Convert.ToDecimal(reader["ValorPago"].ToString());
             this.ValorRecebido = Convert.ToDecimal(reader["ValorRecebido"].ToString());
             this.Troco = Convert.ToDecimal(reader["Troco"].ToString());
-            this.DataHora = Convert.ToDateTime(reader["DataHora"].ToString());
-            this.DataHoraCancelamento = Convert.ToDateTime(reader["DataHoraCancelamento"].ToString());
+            this.DataHora = ConvertBase.ToDateTime(reader["DataHora"].ToString());
+            this.DataHoraCancelamento = ConvertBase.ToDateTime(reader["DataHoraCancelamento"].ToString());
             this.Cancelado = Convert.ToBoolean(reader["Cancelado"]);
             this.Motivo = reader["Motivo"].ToString();
+            this.Informacao = reader["Informacao"].ToString();
         }
 
         protected override void SetParentAndChildren(SqlDataReader reader)
@@ -147,11 +174,28 @@ namespace SaucierLibrary.PagamentoBase
             Responsavel = Funcionario.GetByReader(reader);
             TipoPagamento = TipoPagamento.GetByReader(reader);
         }
+
+        protected override void SetChildren()
+        {
+            Comanda = Comanda.Get(new ComandaCriteriaBase(ComandaId));
+            Responsavel = Funcionario.Get(new FuncionarioCriteriaBase(ResponsavelId));
+            TipoPagamento = TipoPagamento.Get(new TipoPagamentoCriteriaBase(TipoPagamentoId));
+        }
         #endregion Parameters
 
         #endregion Data Methods
 
         #region Custom Methods
+
+        #region Cancelar Pagamento
+        public void CancelarPagamento(string motivo)
+        {
+            DataHoraCancelamento = DateTime.Now;
+            Motivo = motivo;
+            Cancelado = true;
+            Save();
+        }
+        #endregion Cancelar Pagamento
 
         #endregion Custom Methods
     }

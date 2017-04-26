@@ -67,6 +67,14 @@ namespace SaucierLibrary.ItemBase
         {
             return New(new RestauranteItemAdicionalCriteriaCreateBase());
         }
+
+        protected override void SaveChilds()
+        {
+        }
+
+        protected override void BeforeSave()
+        {
+        }
         #endregion Constructors
 
         #region Data Methods
@@ -119,12 +127,17 @@ namespace SaucierLibrary.ItemBase
             this.Custo = Convert.ToDecimal(reader["Custo"].ToString());
             this.Preco = Convert.ToDecimal(reader["Preco"].ToString());
             this.RestauranteId = ConvertBase.ToGuid(reader["RestauranteId"].ToString());
-            this.DataCriacao = Convert.ToDateTime(reader["DataCriacao"].ToString());
+            this.DataCriacao = ConvertBase.ToDateTime(reader["DataCriacao"].ToString());
         }
 
         protected override void SetParentAndChildren(SqlDataReader reader)
         {
             Restaurante = Restaurante.GetByReader(reader);
+        }
+
+        protected override void SetChildren()
+        {
+            Restaurante = Restaurante.Get(new RestauranteCriteriaBase(RestauranteId));
         }
         #endregion Parameters
 

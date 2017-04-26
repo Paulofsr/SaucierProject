@@ -67,6 +67,14 @@ namespace SaucierLibrary.RestauranteBase
         {
             return New(new RestauranteItemCriteriaCreateBase(Guid.Empty, Guid.Empty));
         }
+
+        protected override void SaveChilds()
+        {
+        }
+
+        protected override void BeforeSave()
+        {
+        }
         #endregion Constructors
 
         #region Data Methods
@@ -120,6 +128,12 @@ namespace SaucierLibrary.RestauranteBase
         {
             Restaurante = Restaurante.GetByReader(reader);
             Item = Item.GetByReader(reader);
+        }
+
+        protected override void SetChildren()
+        {
+            Restaurante = Restaurante.Get(new RestauranteCriteriaBase(RestauranteId));
+            Item = Item.Get(new ItemCriteriaBase(ItemId));
         }
         #endregion Parameters
 

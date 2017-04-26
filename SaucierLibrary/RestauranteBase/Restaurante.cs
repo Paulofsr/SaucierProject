@@ -35,7 +35,7 @@ namespace SaucierLibrary.RestauranteBase
 
         [Display(Name = "CNPJ")]
         [Required(ErrorMessage = "Campo CNPJ é obrigatório.")]
-        public string CNPJ { get; private set; }
+        public string CNPJ { get; set; }
 
         #region Overrides Properties
         protected override TiboBase BaseSelected { get { return TiboBase.Pessoal; } }
@@ -53,6 +53,14 @@ namespace SaucierLibrary.RestauranteBase
         public new static Restaurante Empty()
         {
             return New(new RestauranteCriteriaCreateBase());
+        }
+
+        protected override void SaveChilds()
+        {
+        }
+
+        protected override void BeforeSave()
+        {
         }
         #endregion Constructors
 
@@ -103,11 +111,37 @@ namespace SaucierLibrary.RestauranteBase
 
         protected override void SetParentAndChildren(SqlDataReader reader)
         { }
+
+        protected override void SetChildren()
+        { }
         #endregion Parameters
 
         #endregion Data Methods
 
         #region Custom Methods
+
+        public static Guid GetRestauranteDefaultId()
+        {
+            Restaurante restaurante = Restaurante.Empty();
+            return restaurante.RestauranteDefaultId();
+        }
+
+        private Guid RestauranteDefaultId()
+        {
+            List<SqlParameter> parameters = new List<SqlParameter>();
+            string query = @"
+SELECT [Id]
+  FROM [dbo].[RestauranteTB];";
+
+            ExecuteReaderQuery(query, parameters.ToArray(), "ReturnRestauranteDefaultId");
+            return Id;
+        }
+
+        public void ReturnRestauranteDefaultId(SqlDataReader reader)
+        {
+            if (reader.Read())
+                Id = ConvertBase.ToGuid(reader["Id"].ToString());
+        }
 
         #endregion Custom Methods
     }

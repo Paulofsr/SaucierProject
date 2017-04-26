@@ -1,0 +1,22 @@
+﻿@using SaucierLibrary.ItemBase
+@model IEnumerable<Item>
+
+
+<table class="table table-hover table-striped table-success table-bordered" style="min-width:280px;">
+
+    @foreach (var item in Model)
+    {
+        <tr id="@item.Id" onclick="selectItem('@(item.Id)', '@(item.Nome) - @(item.TipoItem.Tipo)')">
+            <td>
+                @Html.DisplayFor(modelItem => item.Nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TipoItem.Tipo)
+            </td>
+            <td>
+                R$@Html.DisplayFor(modelItem => item.Preco)
+            </td>
+        </tr>
+    }
+
+</table>

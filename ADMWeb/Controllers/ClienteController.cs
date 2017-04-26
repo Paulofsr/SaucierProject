@@ -11,7 +11,7 @@ namespace ADMWeb.Controllers
     {
         public ActionResult Index()
         {
-            return View(Cliente.GetList());
+            return View(Cliente.ToList());
         }
 
         public ActionResult Delete(string id)

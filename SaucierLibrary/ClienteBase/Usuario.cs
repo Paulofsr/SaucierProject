@@ -87,6 +87,14 @@ namespace SaucierLibrary.ClienteBase
         {
             return New(new UsuarioCriteriaCreateBase(Guid.Empty));
         }
+
+        protected override void SaveChilds()
+        {
+        }
+
+        protected override void BeforeSave()
+        {
+        }
         #endregion Constructors
 
         #region Data Methods
@@ -143,12 +151,17 @@ namespace SaucierLibrary.ClienteBase
             this.ClienteId = ConvertBase.ToGuid(reader["ClienteId"].ToString());
             this.Email = reader["Email"].ToString();
             this.EmailConfirmado = Convert.ToBoolean(reader["EmailConfirmado"]);
-            this.CriadoEm = Convert.ToDateTime(reader["CriadoEm"]);
+            this.CriadoEm = ConvertBase.ToDateTime(reader["CriadoEm"]);
         }
 
         protected override void SetParentAndChildren(SqlDataReader reader)
         {
             Cliente = Cliente.GetByReader(reader);
+        }
+
+        protected override void SetChildren()
+        {
+            Cliente = Cliente.Get(new ClienteCriteriaBase(ClienteId));
         }
         #endregion Parameters
 

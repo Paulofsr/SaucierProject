@@ -1,0 +1,26 @@
+﻿@using SaucierLibrary.CaixaBase
+@model IEnumerable<Comanda>
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Informacao)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalCusto)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalPago)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr id="@(string.Format("Comanda-{0}", item.Id))">
+            @{ Html.RenderPartial("_caixaComanda", item); }
+        </tr>
+    }
+
+</table>

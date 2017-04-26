@@ -29,5 +29,17 @@ namespace PessoalLibrary.Padroes
             catch { }
             return Guid.Empty;
         }
+
+        public static DateTime ToDateTime(object value)
+        {
+            try
+            {
+                return Convert.ToDateTime(value);
+            }
+            catch
+            {
+                return DateTime.MinValue;
+            }
+        }
     }
 }

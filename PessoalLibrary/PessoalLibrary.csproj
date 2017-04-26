@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PessoalLibrary</RootNamespace>
     <AssemblyName>PessoalLibrary</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,7 +49,9 @@
     <Compile Include="Padroes\Base.cs" />
     <Compile Include="Padroes\Contexto.cs" />
     <Compile Include="Padroes\ConvertBase.cs" />
-    <Compile Include="Padroes\ObjectInfoDefault.cs" />
+    <Compile Include="Padroes\NameItem.cs" />
+    <Compile Include="Padroes\ObjectDefault.cs" />
+    <Compile Include="Padroes\ObjectModelInfo.cs" />
     <Compile Include="Padroes\ObjectModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

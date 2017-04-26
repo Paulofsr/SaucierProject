@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SaucierLibrary</RootNamespace>
     <AssemblyName>SaucierLibrary</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -42,13 +42,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CaixaBase\ConfiguracaoCondicional.cs" />
+    <Compile Include="CaixaBase\ConfiguracaoItem.cs" />
+    <Compile Include="CaixaBase\Configuracao.cs" />
     <Compile Include="CaixaBase\ComandaItem.cs" />
     <Compile Include="CaixaBase\Comanda.cs" />
     <Compile Include="CaixaBase\Caixa.cs" />
+    <Compile Include="ClienteBase\Cadastro.cs" />
     <Compile Include="ClienteBase\Cliente.cs" />
     <Compile Include="ClienteBase\Usuario.cs" />
     <Compile Include="FuncionarioBase\Funcionario.cs" />
     <Compile Include="FuncionarioBase\TipoFuncionario.cs" />
+    <Compile Include="ItemBase\ItemComandaInfo.cs" />
     <Compile Include="ItemBase\RestauranteItemAdicional.cs" />
     <Compile Include="ItemBase\ItemComponente.cs" />
     <Compile Include="ItemBase\TipoItem.cs" />

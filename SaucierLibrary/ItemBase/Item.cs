@@ -42,7 +42,9 @@ namespace SaucierLibrary.ItemBase
 
         [Display(Name = "Descrição")]
         public string Descricao { get; set; }
-
+        
+        [Display(Name = "Tipo")]
+        [Required(ErrorMessage = "Selecione um tipo para esse item.")]
         public System.Guid TipoItemId { get; set; }
 
         public TipoItem TipoItem { get; private set; }
@@ -63,6 +65,14 @@ namespace SaucierLibrary.ItemBase
         public new static Item Empty()
         {
             return New(new ItemCriteriaCreateBase());
+        }
+
+        protected override void SaveChilds()
+        {
+        }
+
+        protected override void BeforeSave()
+        {
         }
         #endregion Constructors
 
@@ -121,12 +131,34 @@ namespace SaucierLibrary.ItemBase
         {
             TipoItem = TipoItem.GetByReader(reader);
         }
+
+        protected override void SetChildren()
+        {
+            TipoItem = TipoItem.Get(new TipoItemCriteriaBase(TipoItemId));
+        }
         #endregion Parameters
 
         #endregion Data Methods
 
         #region Custom Methods
 
+
+        #region ToList By Filter
+        public static List<Item> ToListByFilter(string filter)
+        {
+            List<Item> result = new List<Item>();
+            if (filter.Length > 0)
+            {
+                List<SqlParameter> lista = new List<SqlParameter>();
+                lista.Add(CriarParametro(SqlDbType.VarChar, filter + "%", "@filter"));
+                result.AddRange(ToList("ByFilter", lista));
+                lista = new List<SqlParameter>();
+                lista.Add(CriarParametro(SqlDbType.VarChar, "%" + filter, "@filter"));
+                result.AddRange(ToList("ByFilter", lista));
+            }
+            return result;
+        }
+        #endregion ToList By Filter
         #endregion Custom Methods
     }
 }

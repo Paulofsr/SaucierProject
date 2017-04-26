@@ -21,7 +21,12 @@ namespace SaucierLibrary.FuncionarioBase
 
     public class FuncionarioCriteriaCreateBase : ICriteriaCreateBase
     {
+        public Guid UsuarioId { get; set; }
 
+        public FuncionarioCriteriaCreateBase(Guid usuarioId)
+        {
+            UsuarioId = usuarioId;
+        }
     }
     #endregion Criterias
 
@@ -64,7 +69,15 @@ namespace SaucierLibrary.FuncionarioBase
 
         public new static Funcionario Empty()
         {
-            return New(new FuncionarioCriteriaCreateBase());
+            return New(new FuncionarioCriteriaCreateBase(Guid.Empty));
+        }
+
+        protected override void SaveChilds()
+        {
+        }
+
+        protected override void BeforeSave()
+        {
         }
         #endregion Constructors
 
@@ -83,7 +96,8 @@ namespace SaucierLibrary.FuncionarioBase
         #region Create
         protected override void Create(ICriteriaCreateBase criteria)
         {
-            Id = Guid.NewGuid();
+            Id = ((FuncionarioCriteriaCreateBase)criteria).UsuarioId;
+            UsuarioId = ((FuncionarioCriteriaCreateBase)criteria).UsuarioId;
         }
         #endregion Create
 
@@ -125,6 +139,12 @@ namespace SaucierLibrary.FuncionarioBase
         {
             TipoFuncionario = TipoFuncionario.GetByReader(reader);
             Usuario = Usuario.GetByReader(reader);
+        }
+
+        protected override void SetChildren()
+        {
+            TipoFuncionario = TipoFuncionario.Get(new TipoFuncionarioCriteriaBase(TipoId));
+            Usuario = Usuario.Get(new UsuarioCriteriaBase(UsuarioId));
         }
         #endregion Parameters
 

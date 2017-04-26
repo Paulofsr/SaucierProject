@@ -52,6 +52,14 @@ namespace SaucierLibrary.ItemBase
         {
             return New(new TipoItemCriteriaCreateBase());
         }
+
+        protected override void SaveChilds()
+        {
+        }
+
+        protected override void BeforeSave()
+        {
+        }
         #endregion Constructors
 
         #region Data Methods
@@ -100,6 +108,9 @@ namespace SaucierLibrary.ItemBase
         }
 
         protected override void SetParentAndChildren(SqlDataReader reader)
+        { }
+
+        protected override void SetChildren()
         { }
         #endregion Parameters
 

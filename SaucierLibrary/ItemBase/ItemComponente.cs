@@ -64,6 +64,14 @@ namespace SaucierLibrary.ItemBase
         {
             return New(new ItemComponenteItemCriteriaCreateBase(Guid.Empty, Guid.Empty));
         }
+
+        protected override void SaveChilds()
+        {
+        }
+
+        protected override void BeforeSave()
+        {
+        }
         #endregion Constructors
 
         #region Data Methods
@@ -115,6 +123,12 @@ namespace SaucierLibrary.ItemBase
         {
             Item = Item.GetByReader(reader);
             ItemComponente = Item.GetByReader(reader);
+        }
+
+        protected override void SetChildren()
+        {
+            Item = Item.Get(new ItemCriteriaBase(ItemId));
+            ItemComponente = Item.Get(new ItemCriteriaBase(ComponenteId));
         }
         #endregion Parameters
 

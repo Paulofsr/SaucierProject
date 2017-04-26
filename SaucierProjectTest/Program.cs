@@ -18,5 +18,10 @@ namespace SaucierProjectTest
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
         }
+
+        private static void Ok()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

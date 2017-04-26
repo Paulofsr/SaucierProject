@@ -22,7 +22,14 @@ namespace SaucierLibrary.CaixaBase
 
     public class ComandaItemCriteriaCreateBase : ICriteriaCreateBase
     {
+        public Guid ResponsavelId { get; set; }
+        public Guid ComandaId { get; set; }
 
+        public ComandaItemCriteriaCreateBase(Guid responsavelId, Guid comandaId)
+        {
+            ResponsavelId = responsavelId;
+            ComandaId = comandaId;
+        }
     }
     #endregion Criterias
 
@@ -38,15 +45,15 @@ namespace SaucierLibrary.CaixaBase
         public decimal Quantidade { get; set; }
 
         [Display(Name = "Cancelado")]
-        public Boolean Cancelado { get; set; }
+        public Boolean Cancelado { get; private set; }
 
-        public System.Guid ComandaId { get; set; }
+        public System.Guid ComandaId { get; private set; }
 
         public System.Guid ItemId { get; set; }
 
         public System.Guid ItemAdicionalId { get; set; }
 
-        public System.Guid ResponsavelId { get; set; }
+        public System.Guid ResponsavelId { get; private set; }
 
         public Comanda Comanda { get; private set; }
 
@@ -55,6 +62,17 @@ namespace SaucierLibrary.CaixaBase
         public RestauranteItemAdicional ItemAdicional { get; private set; }
 
         public Funcionario Responsavel { get; private set; }
+
+        [Display(Name = "Total")]
+        public decimal PrecoTotal
+        {
+            get
+            {
+                if (ItemId != Guid.Empty)
+                    return Item.Preco * Quantidade;
+                return ItemAdicional.Preco * Quantidade;
+            }
+        }
 
         #region Overrides Properties
         protected override TiboBase BaseSelected { get { return TiboBase.Pessoal; } }
@@ -71,7 +89,15 @@ namespace SaucierLibrary.CaixaBase
 
         public new static ComandaItem Empty()
         {
-            return New(new ComandaItemCriteriaCreateBase());
+            return New(new ComandaItemCriteriaCreateBase(Guid.Empty, Guid.Empty));
+        }
+
+        protected override void SaveChilds()
+        {
+        }
+
+        protected override void BeforeSave()
+        {
         }
         #endregion Constructors
 
@@ -91,6 +117,8 @@ namespace SaucierLibrary.CaixaBase
         protected override void Create(ICriteriaCreateBase criteria)
         {
             Id = Guid.NewGuid();
+            ResponsavelId = ((ComandaItemCriteriaCreateBase)criteria).ResponsavelId;
+            ComandaId = ((ComandaItemCriteriaCreateBase)criteria).ComandaId;
         }
         #endregion Create
 
@@ -125,7 +153,7 @@ namespace SaucierLibrary.CaixaBase
             this.ItemAdicionalId = ConvertBase.ToGuid(reader["ItemAdicionalId"].ToString());
             this.ItemId = ConvertBase.ToGuid(reader["ItemId"].ToString());
             this.ResponsavelId = ConvertBase.ToGuid(reader["ResponsavelId"].ToString());
-            this.DataHora = Convert.ToDateTime(reader["DataHora"].ToString());
+            this.DataHora = ConvertBase.ToDateTime(reader["DataHora"].ToString());
             this.Cancelado = Convert.ToBoolean(reader["Cancelado"]);
             this.Quantidade = Convert.ToDecimal(reader["Quantidade"].ToString());
         }
@@ -137,12 +165,59 @@ namespace SaucierLibrary.CaixaBase
             ItemAdicional = RestauranteItemAdicional.GetByReader(reader);
             Responsavel = Funcionario.GetByReader(reader);
         }
+
+        protected override void SetChildren()
+        {
+            Comanda = Comanda.Get(new ComandaCriteriaBase(ComandaId));
+            Item = Item.Get(new ItemCriteriaBase(ItemId));
+            ItemAdicional = RestauranteItemAdicional.Get(new RestauranteItemAdicionalCriteriaBase(ItemAdicionalId));
+            Responsavel = Funcionario.Get(new FuncionarioCriteriaBase(ResponsavelId));
+        }
         #endregion Parameters
 
         #endregion Data Methods
 
         #region Custom Methods
+        private void CancelarItem()
+        {
+            Cancelado = true;
+            Save();
+        }
 
+        public decimal ValorTotal()
+        {
+            if (!Item.Vazio)
+                return Item.Preco * Quantidade;
+            return ItemAdicional.Preco * Quantidade;
+        }
+
+        #region ToList Group
+        public static List<ComandaItem> ToListGroupActivedByComanda(Guid comandaId)
+        {
+            List<SqlParameter> lista = new List<SqlParameter>();
+            lista.Add(CriarParametro(SqlDbType.UniqueIdentifier, comandaId, "@ComandaId"));
+            return ToList("GroupActivedByComanda", lista);
+        }
+
+        public static List<ComandaItem> ToListGroupByComanda(Guid comandaId)
+        {
+            List<SqlParameter> lista = new List<SqlParameter>();
+            lista.Add(CriarParametro(SqlDbType.UniqueIdentifier, comandaId, "@ComandaId"));
+            return ToList("GroupByComanda", lista);
+        }
+
+        public static List<ComandaItem> ToListGroupActived()
+        {
+            List<SqlParameter> lista = new List<SqlParameter>();
+            return ToList("GroupActived", lista);
+        }
+
+        public static List<ComandaItem> ToListGroup()
+        {
+            List<SqlParameter> lista = new List<SqlParameter>();
+            return ToList("Group", lista);
+        }
+        #endregion ToList Group
         #endregion Custom Methods
     }
 }

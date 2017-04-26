@@ -1,0 +1,226 @@
+﻿@using SaucierLibrary.CaixaBase
+@model Caixa
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutLogado.cshtml";
+}
+
+<h2>Caixa</h2>
+<input type="hidden" id="comandaId" />
+<a id="AddComanda">Nova Comanda</a>
+<div id="Comandas" style="background-color:white">
+    @{ Html.RenderPartial("_comandas", Model.ToListComandaAtivas()); }
+</div>
+
+<div id="Comanda" class="comanda-container">
+    <div class="avatar"></div>
+    <div class="form-box">
+        <a id="addItem" onclick="addItem()">Adicionar Item</a>
+        <a id="pagar" onclick="pagarComanda()">Pagar</a>
+        <div id="ComandaInfo" class="Comanda-Info"></div>
+    </div>
+</div>
+
+<div id="Pagamento" style="height:100%; width:100%; overflow:hidden; background-color:aqua;">
+    <div class="container">
+        <div class="col-md-6">
+            <div id="ComandaPagamento" class="">
+                <div class="form-box">
+                    <div id="ComandaInfoPagamento" class="Comanda-Info"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div id="DDCEBA9F-A6CB-4ADF-AC50-89473FD2708B" class="col-md-4 pagamento pagamento-dinheiro" onclick="return selectTipoPagamento('DDCEBA9F-A6CB-4ADF-AC50-89473FD2708B')">DINHEIRO</div>
+                <div id="8CE7A3A3-7112-4F3A-B3CA-5401EA3B9988" class="col-md-4 pagamento pagamento-cartao" onclick="return selectTipoPagamento('8CE7A3A3-7112-4F3A-B3CA-5401EA3B9988')">CARTÃO</div>
+                <div class="col-md-4 pagamento pagamento-ticket">CUPOM</div>
+            </div>
+            <div class="row">
+                <div class="col-md-12" id="dinheiroOptions" hidden="hidden">
+                    <div class="col-md-4 pagamento pagamento-dinheiro">DINHEIRO</div>
+                    <div class="col-md-4 pagamento pagamento-cartao">CARTÃO</div>
+                    <div class="col-md-4 pagamento pagamento-ticket">CUPOM</div>
+                </div>
+            </div>
+            <div class="row">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="newItem" class="popup">
+    @{ Html.RenderPartial("_addItemForm", new SaucierWeb.Models.AddItem() { ComandaId = Model.Id }); }
+</div>
+
+@section Scripts {
+    <script>
+        $("#Comanda").hide();
+        $("#newItem").hide();
+        $("#Pagamento").hide();
+        var nItem;
+        var pagamento;
+
+        function search(inp) {
+            if ($(inp).val().length > 1) {
+                $.ajax({
+                    type: "POST",
+                    url: "Caixa/SearchItem?filter=" + $(inp).val(),
+                    success: function (data) {
+                        $("#itemLista").html(data);
+                        $("#itemLista").show();
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        //alert(thrownError);
+                    }
+                });
+            }
+            else {
+                $("#itemLista").hide();
+            }
+        }
+
+        function selectItem(id, nome)
+        {
+            $("#ItemId").val(id);
+            $("#Item").val(nome);
+            $("#itemLista").hide();
+        }
+
+        $('#AddComanda').click(function () {
+            $('#Comanda').bPopup({
+                easing: 'easeOutBack', //uses jQuery easing plugin
+                speed: 450,
+                transition: 'slideIn',
+                transitionClose: 'slideBack',
+                onClose: function () {
+                    
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: "Caixa/New?info=" + "Mesa 1",
+                success: function (data) {
+                    $("#Comandas").html(data);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(thrownError);
+                }
+            });
+        });
+
+        function ShowComanda(id)
+        {
+            $("#comandaId").val(id);
+            $.ajax({
+                type: "POST",
+                url: "Caixa/GetComanda?id=" + id,
+                success: function (data) {
+                    $(".Comanda-Info").html(data);
+                    $('#Comanda').bPopup({
+                        easing: 'easeOutBack', //uses jQuery easing plugin
+                        speed: 450,
+                        transition: 'slideDown',
+                        onClose: function () {
+                            updateLine($("#comandaId").val())
+                        }
+                    });
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(thrownError);
+                }
+            });
+        }
+
+        function updateLine(comandaId)
+        {
+            $.ajax({
+                type: "POST",
+                url: "Caixa/GetCaixaComanda?id=" + comandaId,
+                success: function (data) {
+                    $("#Comanda-" + comandaId).html(data);
+                }
+            });
+        }
+
+        function pagarComanda()
+        {
+            pagamento = new PagamentoClass();
+            $('#Pagamento').bPopup({
+                easing: 'easeOutBack', //uses jQuery easing plugin
+                speed: 850,
+                transition: 'slideDown'
+            });
+        }
+
+        function selectTipoPagamento(id) {
+            pagamento.tipoPagamentoId = id;
+            $('.selectOption').removeClass('selectOption');
+            $('#' + id).addClass('selectOption');
+        }
+
+        function addItem()
+        {
+            nItem = $('#newItem').bPopup({
+                easing: 'easeOutBack' //uses jQuery easing plugin
+            });
+        }
+
+        function sendNewItem()
+        {
+            $.ajax({
+                type: "POST",
+                url: "Caixa/AddItem?comandaId=" + $("#comandaId").val() + "&itemId=" + $("#ItemId").val() + "&quantidade=" + $("#Quantidade").val(),
+                success: function (data) {
+                    $(".Comanda-Info").html(data);
+                    nItem.close();
+                    clearAddItem();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(thrownError);
+                }
+            })
+        }
+
+        function clearAddItem()
+        {
+            $("#ItemId").val("");
+            $("#Quantidade").val(0);
+            $("#Item").val("");
+        }
+    </script>
+}
+<style type="text/css">
+    .modal a.close-modal[class*="icon-"] {
+        top: -10px;
+        right: -10px;
+        width: 20px;
+        height: 20px;
+        color: #fff;
+        line-height: 1.25;
+        text-align: center;
+        text-decoration: none;
+        text-indent: 0;
+        background: #900;
+        border: 2px solid #fff;
+        -webkit-border-radius: 26px;
+        -moz-border-radius: 26px;
+        -o-border-radius: 26px;
+        -ms-border-radius: 26px;
+        -moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+        -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+        box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+

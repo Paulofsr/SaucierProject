@@ -50,6 +50,14 @@ namespace SaucierLibrary.FuncionarioBase
         {
             return New(new TipoFuncionarioCriteriaCreateBase());
         }
+
+        protected override void SaveChilds()
+        {
+        }
+
+        protected override void BeforeSave()
+        {
+        }
         #endregion Constructors
 
         #region Data Methods
@@ -96,6 +104,9 @@ namespace SaucierLibrary.FuncionarioBase
         }
 
         protected override void SetParentAndChildren(SqlDataReader reader)
+        { }
+
+        protected override void SetChildren()
         { }
         #endregion Parameters
 

@@ -60,6 +60,14 @@ namespace SaucierLibrary.ClienteBase
         {
             return New(new ClienteCriteriaCreateBase());
         }
+
+        protected override void SaveChilds()
+        {
+        }
+
+        protected override void BeforeSave()
+        {
+        }
         #endregion Constructors
 
         #region Data Methods
@@ -109,13 +117,16 @@ namespace SaucierLibrary.ClienteBase
         {
             this.Id = ConvertBase.ToGuid(reader["Id"].ToString());
             this.Nome = reader["Nome"].ToString();
-            this.CriadoEm = Convert.ToDateTime(reader["CriadoEm"]);
+            this.CriadoEm = ConvertBase.ToDateTime(reader["CriadoEm"]);
             this.Base = reader["Base"].ToString();
             this.Ativa = Convert.ToBoolean(reader["Ativa"]);
             this.Url = reader["Url"].ToString();
         }
 
         protected override void SetParentAndChildren(SqlDataReader reader)
+        { }
+
+        protected override void SetChildren()
         { }
         #endregion Parameters
 
@@ -138,7 +149,7 @@ namespace SaucierLibrary.ClienteBase
             parameters.Add(CriarParametro(SqlDbType.VarChar, url, "@Url"));
             string query = @"
 SELECT [Id]
-  FROM [SaucierDB].[dbo].[ClienteTB]
+  FROM  [SaucierDB].[dbo].[ClienteTB] with(nolock)
 where [Url] = @Url;";
 
             ExecuteReaderQuery(query, parameters.ToArray(), "ReturnUrl");

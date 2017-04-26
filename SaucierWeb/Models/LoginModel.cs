@@ -1,37 +1,30 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
 
 namespace SaucierWeb.Models
 {
-    public class LoginModels
+    public class LoginModel
     {
 
-        private string _mensagem = string.Empty;
-
-        [Display(Name = "ERRO")]
-        public string Mensagem
-        {
-            get { return _mensagem; }
-            set { _mensagem = value; }
-        }
-
-        private string _login = string.Empty;
-
-        [Display(Name = "Login")]
-        [Required(ErrorMessage = "Informe o Login.")]
-        public string Login
-        {
-            get { return _login; }
-            set { _login = value; }
-        }
-
-        private string _senha = string.Empty;
+        [Display(Name = "Email")]
+        [Required(ErrorMessage = "Informe o seu email.")]
+        public string Email { get; set; }
 
         [Display(Name = "Senha")]
-        [Required(ErrorMessage = "Informe a Senha.")]
-        public string Senha
+        [DataType(DataType.Password)]
+        [Required(ErrorMessage = "Informe a sua senha.")]
+        public string Senha { get; set; }
+
+        public string LastUrl { get; set; }
+
+        public LoginModel(string url)
         {
-            get { return _senha; }
-            set { _senha = value; }
+            this.LastUrl = url;
         }
+
+        public LoginModel() { }
     }
 }

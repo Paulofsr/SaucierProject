@@ -25,7 +25,7 @@ namespace PessoalLibrary.Padroes
     public abstract class ObjectModel<T> where T : ObjectModel<T>
     {
         #region Property
-        public bool Novo { get; protected set; }
+        public bool Novo { get; set; }
         public bool Vazio { get; protected set; }
 
         protected abstract TiboBase BaseSelected { get; }
@@ -74,10 +74,17 @@ namespace PessoalLibrary.Padroes
             return obj;
         }
 
-        public static List<T> GetList()
+        public static List<T> ToList()
         {
             T obj = (T)Activator.CreateInstance(typeof(T));
-            obj.SelectDataList();
+            obj.SelectDataList(string.Empty, new List<SqlParameter>());
+            return obj.List;
+        }
+
+        protected static List<T> ToList(string sufix, List<SqlParameter> parameters)
+        {
+            T obj = (T)Activator.CreateInstance(typeof(T));
+            obj.SelectDataList(sufix, parameters);
             return obj.List;
         }
 
@@ -87,20 +94,39 @@ namespace PessoalLibrary.Padroes
             obj.DeleteData(criteria);
         }
 
-        protected static T GetByReader(SqlDataReader reader)
+        public static List<NameItem> ToNameList(string info)
         {
+            T obj = (T)Activator.CreateInstance(typeof(T));
+            return obj.SelectDataNameList(info);
+        }
+
+        public List<NameItem> NameList(string info)
+        {
+            return SelectDataNameList(info);
+        }
+
+        public static T GetByReader(SqlDataReader reader)
+        {
+            if (!reader.NextResult())
+                return null;
             T obj = (T)Activator.CreateInstance(typeof(T));
             obj.SetDefaultParameters(reader);
             return obj;
         }
 
+        protected abstract void BeforeSave();
+
         public void Save()
         {
+            BeforeSave();
             if (this.Novo)
                 InsertData();
             else
                 UpdateData();
+            SaveChilds();
         }
+
+        protected abstract void SaveChilds();
         #endregion Control Methods
 
         #region Data Methods
@@ -114,6 +140,7 @@ namespace PessoalLibrary.Padroes
         protected abstract SqlParameter[] GetIdParametros(ICriteriaBase criteria);
         protected abstract void SetParameters(SqlDataReader reader);
         protected abstract void SetParentAndChildren(SqlDataReader reader);
+        protected abstract void SetChildren();
 
         protected static SqlParameter CriarParametro(SqlDbType dbType, Object data, string nome, ParameterDirection direcao = ParameterDirection.Input)
         {
@@ -128,13 +155,29 @@ namespace PessoalLibrary.Padroes
 
         protected static SqlParameter CriarParametro(SqlDbType dbType, Object data, string nome)
         {
+            if (dbType != SqlDbType.Date && dbType != SqlDbType.DateTime)
+                return new SqlParameter()
+                {
+                    SqlDbType = dbType,
+                    Direction = ParameterDirection.Input,
+                    Value = data ?? DBNull.Value,
+                    ParameterName = nome
+                };
+
             return new SqlParameter()
             {
                 SqlDbType = dbType,
                 Direction = ParameterDirection.Input,
-                Value = data ?? DBNull.Value,
+                Value = GetValuDate(data),
                 ParameterName = nome
             };
+        }
+
+        private static object GetValuDate(object data)
+        {
+            if (((DateTime)data) != DateTime.MinValue && ((DateTime)data) != DateTime.MaxValue)
+                return data;
+            return DBNull.Value;
         }
         #endregion Parameters
 
@@ -153,13 +196,19 @@ namespace PessoalLibrary.Padroes
                     cm.CommandText = "Get" + TableName;
                     cm.Parameters.AddRange(GetIdParametros(criteria));
 
-                    cn.Open();
+                    //foreach (var prop in this.GetType().GetProperties())
+                    //{
+                    //    //Console.WriteLine("{0}={1}", prop.Name, prop.GetValue(foo, null));
+                    //    //lista.Add(CriarParametro(SqlDbType.Bit, , "@Consumo"));
+                    //}
+
+                    OpenConnection(cn);
 
                     using (SqlDataReader reader = cm.ExecuteReader())
                     {
                         SetDefaultParameters(reader);
-                        if (reader.NextResult())
-                            SetParentAndChildren(reader);
+                        //if (reader.NextResult())
+                            //SetParentAndChildren(reader);
                     }
                     
                 }
@@ -176,37 +225,93 @@ namespace PessoalLibrary.Padroes
             }
             Vazio = false;
             SetParameters(reader);
+            SetParentAndChildren(reader);
+        }
+
+        private void SetListtParameters(SqlDataReader reader)
+        {
+            Novo = false;
+            Vazio = false;
+            SetParameters(reader);
         }
 
         #region Select List
-        private void SelectDataList()
+        protected void SelectDataList(string sufix, List<SqlParameter> parameters)
         {
             using (SqlConnection cn = new SqlConnection(ConnectionString))
             {
                 using (SqlCommand cm = cn.CreateCommand())
                 {
                     cm.CommandType = System.Data.CommandType.StoredProcedure;
-                    cm.CommandText = "List" + TableName;
+                    cm.CommandText = "List" + TableName + sufix;
+                    cm.Parameters.AddRange(parameters.ToArray());
 
-                    cn.Open();
+                    OpenConnection(cn);
 
                     using (SqlDataReader reader = cm.ExecuteReader())
                     {
-                        List = new List<T>();
-                        T obj = (T)Activator.CreateInstance(typeof(T));
-                        obj.SetDefaultParameters(reader);
-                        while (!obj.Vazio)
-                        {
-                            List.Add(obj);
-                            obj = (T)Activator.CreateInstance(typeof(T));
-                            obj.SetDefaultParameters(reader);
-                        }
+                        SetList(reader);
                     }
 
                 }
             }
+            MontarChildren();
+        }
+
+        protected void SetList(SqlDataReader reader)
+        {
+            List = new List<T>();
+            while (reader.Read())
+            {
+                T obj = (T)Activator.CreateInstance(typeof(T));
+                obj.SetListtParameters(reader);
+                List.Add(obj);
+            }
+        }
+
+        private void MontarChildren()
+        {
+            foreach(T obj in List)
+            {
+                obj.SetChildren();
+            }
         }
         #endregion Select List
+
+        #region Select Name List
+        private List<NameItem> SelectDataNameList(string info)
+        {
+            List<NameItem> list = new List<NameItem>();
+            if (!string.IsNullOrEmpty(info))
+                list.Add(new NameItem()
+                {
+                    Key = Guid.Empty,
+                    Value = info
+                });
+            using (SqlConnection cn = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cm = cn.CreateCommand())
+                {
+                    cm.CommandType = System.Data.CommandType.StoredProcedure;
+                    cm.CommandText = "NameList" + TableName;
+
+                    OpenConnection(cn);
+
+                    using (SqlDataReader reader = cm.ExecuteReader())
+                    {
+                        while (reader.Read())
+                            list.Add(new NameItem()
+                            {
+                                Key = ConvertBase.ToGuid(reader["KeyId"].ToString()),
+                                Value = reader["Value"].ToString()
+                            });
+                    }
+
+                }
+            }
+            return list;
+        }
+        #endregion Select Name List
         #endregion Select
 
         #region Insert
@@ -220,7 +325,7 @@ namespace PessoalLibrary.Padroes
                     cm.CommandText = "Add" + TableName;
                     cm.Parameters.AddRange(GetParametros());
 
-                    cn.Open();
+                    OpenConnection(cn);
 
                     cm.ExecuteNonQuery();
                 }
@@ -246,7 +351,7 @@ namespace PessoalLibrary.Padroes
                     cm.CommandText = "Update" + TableName;
                     cm.Parameters.AddRange(GetParametros());
 
-                    cn.Open();
+                    OpenConnection(cn);
 
                     cm.ExecuteNonQuery();
                 }
@@ -265,7 +370,7 @@ namespace PessoalLibrary.Padroes
                     cm.CommandText = "Delete" + TableName;
                     cm.Parameters.AddRange(GetIdParametros(criteria));
 
-                    cn.Open();
+                    OpenConnection(cn);
 
                     cm.ExecuteNonQuery();
                 }
@@ -292,9 +397,23 @@ namespace PessoalLibrary.Padroes
                     cm.CommandText = procedure;
                     cm.Parameters.AddRange(parameters);
 
-                    cn.Open();
+                    OpenConnection(cn);
                     Invoke(methodNameInvoke, new List<SqlDataReader>(1) { cm.ExecuteReader() }.ToArray());
                 }
+            }
+        }
+
+        private void OpenConnection(SqlConnection cn)
+        {
+            bool abriu = false;
+            for(int i = 0; i < 100 && !abriu; i++)
+            {
+                try
+                {
+                    cn.Open();
+                    abriu = true;
+                }
+                catch { }
             }
         }
 
@@ -308,7 +427,7 @@ namespace PessoalLibrary.Padroes
                     cm.CommandText = procedure;
                     cm.Parameters.AddRange(parameters);
 
-                    cn.Open();
+                    OpenConnection(cn);
 
                     cm.ExecuteNonQuery();
                 }
@@ -330,7 +449,7 @@ namespace PessoalLibrary.Padroes
                     cm.CommandText = query;
                     cm.Parameters.AddRange(parameters);
 
-                    cn.Open();
+                    OpenConnection(cn);
 
                     return cm.ExecuteNonQuery();
                 }

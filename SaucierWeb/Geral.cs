@@ -1,4 +1,5 @@
 ﻿using PessoalLibrary.Configuracoes;
+using SaucierLibrary.CaixaBase;
 using SaucierLibrary.ClienteBase;
 using System;
 using System.Collections.Generic;
@@ -33,21 +34,21 @@ namespace SaucierWeb
             {
                 if (ObjectLoginSession != null && ObjectLoginSession is Usuario)
                 {
-                    if (Configuracao.ClientBaseIsEmpty) // É preciso atualizar, pois ao recarregar a session estará limpo a propriedade.
-                        Configuracao.BaseId = UsuarioLogado.Cliente.Base;
+                    if (PessoalLibrary.Configuracoes.Configuracao.ClientBaseIsEmpty) // É preciso atualizar, pois ao recarregar a session estará limpo a propriedade.
+                        PessoalLibrary.Configuracoes.Configuracao.BaseId = UsuarioLogado.Cliente.Base;
                     return true;
                 }
                 return false;
             }
         }
 
-        public static bool Logar(string login, string senha, Guid clienteId)
+        public static bool Logar(string login, string senha, string url)
         {
-            Usuario usuario = Usuario.ValidarLoginSenha(login, senha, clienteId);
+            Usuario usuario = Usuario.ValidarLoginSenha(login, senha, Cliente.GetId(url));
             if (!usuario.Vazio)
             {
                 ObjectLoginSession = usuario;
-                Configuracao.BaseId = usuario.Cliente.Base;
+                PessoalLibrary.Configuracoes.Configuracao.BaseId = usuario.Cliente.Base;
                 return true;
             }
             return false;
@@ -59,5 +60,33 @@ namespace SaucierWeb
         }
 
         #endregion User Login Session
+
+        #region Caixa
+        public static Caixa AbrirCaixa()
+        {
+            return Caixa.AbrirCaixa(UsuarioLogado, new List<SaucierLibrary.CaixaBase.Configuracao>());
+        }
+
+        public static bool FecharCaixa()
+        {
+            Caixa caixa = Caixa.GetCaixaAberto();
+            if (!caixa.Vazio)
+                return caixa.FecharCaixa();
+            throw new Exception("Não há caixa aberto.");
+        }
+
+        public static bool CaixaAberto()
+        {
+            return Caixa.ExisteCaixaAberto();
+        }
+        #endregion Caixa
+
+        #region Session
+        public static object URLSession
+        {
+            get { return HttpContext.Current.Session["uRLSession"]; }
+            set { HttpContext.Current.Session["uRLSession"] = value; }
+        }
+        #endregion Session
     }
 }
