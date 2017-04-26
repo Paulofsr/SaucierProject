@@ -8,7 +8,8 @@ namespace PessoalLibrary.Configuracoes
     {
         private static List<string> _lista = new List<string>();
         private static List<string> _mascaras = new List<string>();
-        private static Random _random = new Random();
+        private static Random _random = new Random();//teste
+
 
         private static void InicializarLista()
         {
@@ -139,7 +140,6 @@ namespace PessoalLibrary.Configuracoes
                 _lista.Add("^");
                 _lista.Add(">");
                 _lista.Add("§");
-
                 _mascaras.Add("{0}-{1}.{2}={3}]{4}R{5}/{6}");
                 _mascaras.Add("{0}*{1}S{2}${3}({4}!{5}^{6}");
                 _mascaras.Add("{0}#{1}@{2}%{3}I{4}={5}+{6}");
