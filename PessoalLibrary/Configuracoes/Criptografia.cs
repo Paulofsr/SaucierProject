@@ -9,7 +9,7 @@ namespace PessoalLibrary.Configuracoes
         private static List<string> _lista = new List<string>();
         private static List<string> _mascaras = new List<string>();
         private static Random _random = new Random();//teste outro
-
+        //No novo branch
 
         private static void InicializarLista()
         {
