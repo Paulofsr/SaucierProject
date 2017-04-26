@@ -8,7 +8,7 @@ namespace PessoalLibrary.Configuracoes
     {
         private static List<string> _lista = new List<string>();
         private static List<string> _mascaras = new List<string>();
-        private static Random _random = new Random();//teste
+        private static Random _random = new Random();//teste outro
 
 
         private static void InicializarLista()
@@ -27,7 +27,7 @@ namespace PessoalLibrary.Configuracoes
                 _lista.Add("k");
                 _lista.Add("e");
                 _lista.Add("'");
-                _lista.Add("è");
+                _lista.Add("Ã¨");
                 _lista.Add("7");
                 _lista.Add("o");
                 _lista.Add("b");
@@ -39,11 +39,11 @@ namespace PessoalLibrary.Configuracoes
                 _lista.Add("R");
                 _lista.Add("t");
                 _lista.Add("O");
-                _lista.Add("´");
+                _lista.Add("Â´");
                 _lista.Add("D");
-                _lista.Add("é");
+                _lista.Add("Ã©");
                 _lista.Add("u");
-                _lista.Add("à");
+                _lista.Add("Ã ");
                 _lista.Add("x");
                 _lista.Add("!");
                 _lista.Add("l");
@@ -53,27 +53,27 @@ namespace PessoalLibrary.Configuracoes
                 _lista.Add("/");
                 _lista.Add("5");
                 _lista.Add("w");
-                _lista.Add("Ì");
+                _lista.Add("ÃŒ");
                 _lista.Add("J");
-                _lista.Add("À");
+                _lista.Add("Ã€");
                 _lista.Add("z");
                 _lista.Add("C");
                 _lista.Add("|");
                 _lista.Add(":");
-                _lista.Add("Ã");
+                _lista.Add("Ãƒ");
                 _lista.Add("<");
-                _lista.Add("ã");
-                _lista.Add("º");
-                _lista.Add("¢");
+                _lista.Add("Ã£");
+                _lista.Add("Âº");
+                _lista.Add("Â¢");
                 _lista.Add("3");
                 _lista.Add("B");
                 _lista.Add("p");
-                _lista.Add("Í");
+                _lista.Add("Ã");
                 _lista.Add("S");
                 _lista.Add("A");
                 _lista.Add("n");
                 _lista.Add("I");
-                _lista.Add("á");
+                _lista.Add("Ã¡");
                 _lista.Add("K");
                 _lista.Add("#");
                 _lista.Add("s");
@@ -82,31 +82,31 @@ namespace PessoalLibrary.Configuracoes
                 _lista.Add("0");
                 _lista.Add("P");
                 _lista.Add("8");
-                _lista.Add("È");
+                _lista.Add("Ãˆ");
                 _lista.Add("v");
-                _lista.Add("É");
+                _lista.Add("Ã‰");
                 _lista.Add("Q");
-                _lista.Add("Ç");
+                _lista.Add("Ã‡");
                 _lista.Add("U");
                 _lista.Add("V");
                 _lista.Add("W");
                 _lista.Add("9");
-                _lista.Add("í");
+                _lista.Add("Ã­");
                 _lista.Add("X");
                 _lista.Add(")");
                 _lista.Add("Y");
-                _lista.Add("ü");
-                _lista.Add("Ü");
+                _lista.Add("Ã¼");
+                _lista.Add("Ãœ");
                 _lista.Add("Z");
-                _lista.Add("à");
+                _lista.Add("Ã ");
                 _lista.Add("M");
                 _lista.Add("y");
-                _lista.Add("¨");
-                _lista.Add("ì");
+                _lista.Add("Â¨");
+                _lista.Add("Ã¬");
                 _lista.Add("-");
                 _lista.Add("@");
                 _lista.Add(".");
-                _lista.Add("ç");
+                _lista.Add("Ã§");
                 _lista.Add("$");
                 _lista.Add("%");
                 _lista.Add("&");
@@ -118,28 +118,28 @@ namespace PessoalLibrary.Configuracoes
                 _lista.Add("+");
                 _lista.Add("=");
                 _lista.Add("2");
-                _lista.Add("ª");
+                _lista.Add("Âª");
                 _lista.Add("N");
                 _lista.Add("1");
                 _lista.Add("]");
-                _lista.Add("²");
-                _lista.Add("â");
-                _lista.Add("ñ");
+                _lista.Add("Â²");
+                _lista.Add("Ã¢");
+                _lista.Add("Ã±");
                 _lista.Add("6");
                 _lista.Add(";");
                 _lista.Add("~");
                 _lista.Add(",");
-                _lista.Add("£");
-                _lista.Add("Ñ");
+                _lista.Add("Â£");
+                _lista.Add("Ã‘");
                 _lista.Add("?");
                 _lista.Add(" ");
-                _lista.Add("³");
+                _lista.Add("Â³");
                 _lista.Add("}");
-                _lista.Add("¹");
-                _lista.Add("Â");
+                _lista.Add("Â¹");
+                _lista.Add("Ã‚");
                 _lista.Add("^");
                 _lista.Add(">");
-                _lista.Add("§");
+                _lista.Add("Â§");
                 _mascaras.Add("{0}-{1}.{2}={3}]{4}R{5}/{6}");
                 _mascaras.Add("{0}*{1}S{2}${3}({4}!{5}^{6}");
                 _mascaras.Add("{0}#{1}@{2}%{3}I{4}={5}+{6}");
@@ -259,9 +259,9 @@ namespace PessoalLibrary.Configuracoes
         }
 
         /// <summary>
-        /// Repasse o texto que deseja criptografá-lo.
+        /// Repasse o texto que deseja criptografÃ¡-lo.
         /// </summary>
-        /// <param name="texto">Texto para codificá-lo.</param>
+        /// <param name="texto">Texto para codificÃ¡-lo.</param>
         /// <returns name="Criptografar">Texto criptografado.</returns>
         public static string Criptografar(string texto)
         {
